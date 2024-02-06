@@ -7,6 +7,7 @@ let initialized = false;
 let tokensProcessed = 0;
 let contextSizeSum = [];
 let weights = undefined;
+let isLoading = false;
 
 function start() {
     if (model === undefined) {
@@ -221,6 +222,12 @@ async function loadTinyStoriesModel() {
         return;
     }
 
+    if (isLoading === true) {
+        return;
+    }
+
+    isLoading = true;
+
     const model_and_weights = await loadModel('tiny_stories', (i,n) => {
         const progressBar = document.getElementById('progressBar');
         progressBar.value = (i / n) * 100;
@@ -247,6 +254,8 @@ async function loadTinyStoriesModel() {
     }
 
     updateVocabLifetimeList();
+
+    isLoading = false;
 }
 
 function updateVocabLifetimeList() {
