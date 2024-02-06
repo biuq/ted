@@ -153,7 +153,8 @@
             <h2>Abstract</h2>
             <p>
                 In contrast to the comprehensive comparisons made by Transformers or the sequential dependency in RNNs,
-                TED does not directly depend on past tokens. The core mechanism of TED considers each token only once, in isolation, to determine its decay rate, λ (lambda).
+                Trainable Exponential Decay(s) (TED) introduces a distinct approach that does not directly depend on past tokens. 
+                The core mechanism of TED considers each token only once, in isolation, to determine its decay rate, λ (lambda).
                 Past tokens are then subjected to exponential decay, and their influence is summed and added to the current token to create rich representations.
                 TED benefits from parallel hardware architecture during training, as the only dependency on past tokens is through addition, 
                 which can be performed at any time, in any order, within the context of a single layer.
@@ -168,7 +169,8 @@
                 The order of the past tokens that are kept in the context does not matter, thanks to the nature of exponential decay.
                 This eliminates the need for the positional encoding mechanism, which is seen as problematic in Transformers.
                 The architecture of TED follows that of a Transformer, with the difference that the attention module is replaced by an exponential decay module.
-                TED can be implemented in PyTorch without special CUDA kernels. The code is available at: [Link to code]
+                TED can be implemented in PyTorch without special CUDA kernels.
+                The code is available at: <a href="https://github.com/blpj/ted">https://github.com/blpj/ted</a>
             </p>
         </section>
     </div>
