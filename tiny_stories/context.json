@@ -1,0 +1,5 @@
+{
+    "top_k": 0,
+    "relevance_score": 1E-8,
+    "min_tokens_to_keep": 1
+}

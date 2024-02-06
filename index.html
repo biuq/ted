@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Generation with TED - Trainable Exponential Decay(s)</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 85%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #35424a;
+            color: #ffffff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #e8491d 3px solid;
+        }
+        header a {
+            color: #ffffff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            overflow: hidden;
+        }
+        header li {
+            float: left;
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        header nav {
+            float: right;
+            margin-top: 10px;
+        }
+        header .highlight, header .current a {
+            color: #e8491d;
+            font-weight: bold;
+        }
+        header a:hover {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            header #branding {
+                float: none;
+                text-align: center;
+                margin: 10px 0;
+            }
+            .container {
+                width: 100%;
+            }
+        }
+        @media (max-width: 1280px) {
+            header #branding {
+                float: none;
+                text-align: center;
+                margin: 10px 0;
+            }
+        }
+        .article {
+            padding: 20px;
+            background: #ffffff;
+            margin-bottom: 20px;
+        }
+        .article h2, .article p {
+            margin-bottom: 20px;
+        }
+
+        .abstract {
+            background: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e8491d;
+        }
+
+        .abstract h2 {
+            margin-bottom: 15px;
+        }
+
+        .abstract p {
+            text-align: justify;
+            line-height: 1.6;
+        }
+
+        button {
+            font-size: large;
+        }
+
+        #output-wrapper {
+            border-style: dashed;
+            border-width: 1px;
+            min-height: 150px;
+            max-height: 150px;
+            overflow-y: scroll;
+            padding: 0.5rem;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            display: flex;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid black;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        #vocabLifetimeList {
+            width: 100px;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">Text Generation with TED</span> - Trainable Exponential Decay(s)</h1>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <section class="abstract">
+            <h2>Abstract</h2>
+            <p>
+                In contrast to the comprehensive comparisons made by Transformers or the sequential dependency in RNNs,
+                TED does not directly depend on past tokens. The core mechanism of TED considers each token only once, in isolation, to determine its decay rate, λ (lambda).
+                Past tokens are then subjected to exponential decay, and their influence is summed and added to the current token to create rich representations.
+                TED benefits from parallel hardware architecture during training, as the only dependency on past tokens is through addition, 
+                which can be performed at any time, in any order, within the context of a single layer.
+                
+                After training the model, one can observe that the influence of past tokens naturally decays over time, allowing for some tokens to become irrelevant and thus droppable from the context.
+                Moreover, the well-established mathematical framework surrounding exponential decay enables precise prediction of the moment a particular token will become 'dead'.
+                This observation opens up numerous optimization opportunities during inference.
+                The simplest strategy involves maintaining the K most relevant tokens at any given time, ensuring constant memory requirements.
+                Alternatively, a dynamic approach might involve dropping tokens whose relevance scores fall below a certain threshold.
+                The relevance score is calculated by multiplying a token's vector magnitude ‖v‖ by its current decay factor at time 't'.
+                
+                The order of the past tokens that are kept in the context does not matter, thanks to the nature of exponential decay.
+                This eliminates the need for the positional encoding mechanism, which is seen as problematic in Transformers.
+                The architecture of TED follows that of a Transformer, with the difference that the attention module is replaced by an exponential decay module.
+                TED can be implemented in PyTorch without special CUDA kernels. The code is available at: [Link to code]
+            </p>
+        </section>
+    </div>
+    <div class="container">
+        <section class="article">
+            <h2>Tiny Stories TED Model</h2>
+            <p>
+                <ul>
+                    <li>Proof of Concept</li>
+                    <li>Character-level</li>
+                    <li>Small, 4.7 Million parameters</li>
+                    <li>Undertrained - trained only on a fraction of TinyStoriesV2 dataset <a href="#tinyStoriesPaper">[1]</a><a href="#tinyStoriesHf">[2]</a></li>
+                </ul>
+            </p>
+            <p>
+                This is <i>Proof of Concept</i> and it's intended to show that TED can generate plausible text.
+                The model was trained using GTX 1060 for 20000 iterations.
+            </p>
+            <p>
+                It runs on your device, in your browser, 
+                with pure unoptimized JavaScript code without any parallelization.
+                The source code is available [LINK].
+            </p>
+            <p>
+                Download size: 25 MiB
+            </p>
+            <p>
+                <noscript>
+                    Your browser does not support JavaScript.   
+                </noscript>
+                <button onclick="loadTinyStoriesModel()">Load</button>
+                <progress id="progressBar" max="100" value="0"></progress>
+            </p>
+            <p>
+                <p>Initial prompt:</p>
+                <textarea id="prompt" rows="5", cols="50">Once upon a time</textarea>
+            </p>
+            <p>
+                <button onclick="start()">Start</button>
+                <button onclick="stop()">Stop</button>
+                <button onclick="step()">Step</button>
+                <button onclick="reset()">Reset</button>
+            </p>
+            <p>
+                <pre id="output-wrapper"><code id="output"></code></pre>
+            </p>
+            <p>
+                <p><b>Sampling config:</b></p>
+                <label for="topK">Top-K:</label>
+                <input type="number" id="topK" name="topK" min="0" max="100">
+                <label for="topP">Top-P:</label>
+                <input type="number" id="topP" name="topP" min="0" max="1" step="0.05">
+                <p>
+                    <label for="temperature">Temperature:</label>
+                    <input type="number" id="temperature" name="temperature" min="0.01" step="0.05">
+                </p>
+                <p>
+                    <label for="delay">Delay:</label>
+                    <input type="number" id="delay" name="delay" min="0" step="1">
+                </p>
+                <p><b>Context config (all layers):</b></p>
+                <label for="keepTopK">How many tokens to keep in a context (Top-K):</label>
+                <p><input type="number" id="keepTopK" name="keepTopK" min="0"></p>
+                <label for="relevanceScore">The relevance score below which we drop the tokens:</label>
+                <p><input type="number" id="relevanceScore" name="relevanceScore" min="0" step="0.01"></p>
+                <p>
+                    <p>Numbers of tokens in a context per layer:</p>
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th>Layer Index</th>
+                                <th>Context Size</th>
+                                <th>Avg. Context Size</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows will be added here -->
+                        </tbody>
+                    </table>
+                </p>
+                <p>
+                    <p>First layer (0) - token lifetime over vocabulary:</p>
+                    <small><i>How many discrete steps until the token is dropped from the context, based only on the relvance score threshold.</i></small>
+                    <div id="vocabLifetimeList"></div>
+                </p>
+            </p>
+        </section>
+        <section class="article">
+            <h2>Method</h2>
+            <p>
+                <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/fdacadb747bac9932ffd02ee35cf3cbd0bc0b4c8">
+            </p>
+        </section>
+        <section class="article">
+            <h2>References</h2>
+            <p id="tinyStoriesPaper">[1]: <a href="https://doi.org/10.48550/arXiv.2305.07759">arXiv.2305.07759</a></p>
+            <p id="tinyStoriesHf">[2]: <a href="https://huggingface.co/datasets/noanabeshima/TinyStoriesV2">huggingface.co/datasets/noanabeshima/TinyStoriesV2</a></p>
+        </section>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

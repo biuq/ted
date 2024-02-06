@@ -1,0 +1,7 @@
+{
+    "num_layers": 8,
+    "dim": 256,
+    "hidden_dim": 512,
+    "norm_eps": 1e-06,
+    "vocab_size": 90
+}

@@ -1,0 +1,16 @@
+{
+  "device": "cuda",
+  "random_seed": 1337,
+  "train_sequence_length": 2048,
+  "batch_size": 4,
+  "max_iters": 20000,
+  "eval_interval": 500,
+  "eval_iters": 100,
+  "checkpoint_interval": 1000,
+  "start_learning_rate": 1E-5,
+  "peak_learning_rate": 1E-3,
+  "end_learning_rate": 1E-6,
+  "warmup_percentage": 0.1,
+  "load_vocab": false,
+  "load_weights": false
+}

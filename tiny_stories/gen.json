@@ -1,0 +1,7 @@
+{
+    "device": "cpu",
+    "num_tokens_to_generate": 1024,
+    "top_k": 2,
+    "top_p": 0.95,
+    "temperature": 1
+}
