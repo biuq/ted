@@ -200,6 +200,87 @@
     </div>
     <div class="container">
         <section class="article">
+            <h2>Tiny Stories TED Model</h2>
+            <p>
+                <ul>
+                    <li>Proof of Concept</li>
+                    <li>Character-level</li>
+                    <li>Small, 4.7 Million parameters</li>
+                    <li>Undertrained - trained only on a fraction of TinyStoriesV2 dataset <a href="#tinyStoriesPaper">[1]</a><a href="#tinyStoriesHf">[2]</a></li>
+                </ul>
+            </p>
+            <p>
+                This is <i>Proof of Concept</i> and it's intended to show that TED can generate plausible text.
+                The model was trained using GTX 1060 for 20000 iterations.
+            </p>
+            <p>
+                It runs in your browser with pure unoptimized JavaScript code without any parallelization.
+            </p>
+            <p>
+                Download size: 25 MiB
+            </p>
+            <p>
+                <noscript>
+                    Your browser does not support JavaScript.   
+                </noscript>
+                <button onclick="loadTinyStoriesModel()">Load</button>
+                <progress id="progressBar" max="100" value="0"></progress>
+            </p>
+            <p>
+                <p>Initial prompt:</p>
+                <textarea id="prompt" rows="5", cols="30">Once upon a time</textarea>
+            </p>
+            <p>
+                <button onclick="start()">Start</button>
+                <button onclick="stop()">Stop</button>
+                <button onclick="step()">Step</button>
+                <button onclick="reset()">Reset</button>
+            </p>
+            <p>
+                <pre id="output-wrapper"><code id="output"></code></pre>
+            </p>
+            <p>
+                <p><b>Sampling config:</b></p>
+                <label for="topK">Top-K:</label>
+                <input type="number" id="topK" name="topK" min="0" max="100">
+                <label for="topP">Top-P:</label>
+                <input type="number" id="topP" name="topP" min="0" max="1" step="0.05">
+                <p>
+                    <label for="temperature">Temperature:</label>
+                    <input type="number" id="temperature" name="temperature" min="0.01" step="0.05">
+                </p>
+                <p>
+                    <label for="delay">Delay (milliseconds):</label>
+                    <input type="number" id="delay" name="delay" min="0" step="1">
+                </p>
+                <p><b>Context config (all layers):</b></p>
+                <label for="keepTopK">How many tokens to keep in a context (Top-K):</label>
+                <p><input type="number" id="keepTopK" name="keepTopK" min="0"></p>
+                <label for="relevanceScore">The relevance score below which we drop the tokens:</label>
+                <p><input type="number" id="relevanceScore" name="relevanceScore" min="0" step="0.01"></p>
+                <p>
+                    <p>Numbers of tokens in a context per layer:</p>
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th>Layer Index</th>
+                                <th>Context Size</th>
+                                <th>Avg. Context Size</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows will be added here -->
+                        </tbody>
+                    </table>
+                </p>
+                <p>
+                    <p>First layer (0) - token lifetime over vocabulary:</p>
+                    <small><i>How many discrete steps until the token is dropped from the context, based only on the relvance score threshold.</i></small>
+                    <div id="vocabLifetimeList"></div>
+                </p>
+            </p>
+        </section>
+        <section class="article">
             <h2>Architecture</h2>
             <p>
                 TED architecture is similar to LLaMA <a href="#llama">[3]</a> in some aspects:
@@ -319,87 +400,6 @@
                         </p>
                     </li>
                 </ul>
-            </p>
-        </section>
-        <section class="article">
-            <h2>Tiny Stories TED Model</h2>
-            <p>
-                <ul>
-                    <li>Proof of Concept</li>
-                    <li>Character-level</li>
-                    <li>Small, 4.7 Million parameters</li>
-                    <li>Undertrained - trained only on a fraction of TinyStoriesV2 dataset <a href="#tinyStoriesPaper">[1]</a><a href="#tinyStoriesHf">[2]</a></li>
-                </ul>
-            </p>
-            <p>
-                This is <i>Proof of Concept</i> and it's intended to show that TED can generate plausible text.
-                The model was trained using GTX 1060 for 20000 iterations.
-            </p>
-            <p>
-                It runs in your browser with pure unoptimized JavaScript code without any parallelization.
-            </p>
-            <p>
-                Download size: 25 MiB
-            </p>
-            <p>
-                <noscript>
-                    Your browser does not support JavaScript.   
-                </noscript>
-                <button onclick="loadTinyStoriesModel()">Load</button>
-                <progress id="progressBar" max="100" value="0"></progress>
-            </p>
-            <p>
-                <p>Initial prompt:</p>
-                <textarea id="prompt" rows="5", cols="30">Once upon a time</textarea>
-            </p>
-            <p>
-                <button onclick="start()">Start</button>
-                <button onclick="stop()">Stop</button>
-                <button onclick="step()">Step</button>
-                <button onclick="reset()">Reset</button>
-            </p>
-            <p>
-                <pre id="output-wrapper"><code id="output"></code></pre>
-            </p>
-            <p>
-                <p><b>Sampling config:</b></p>
-                <label for="topK">Top-K:</label>
-                <input type="number" id="topK" name="topK" min="0" max="100">
-                <label for="topP">Top-P:</label>
-                <input type="number" id="topP" name="topP" min="0" max="1" step="0.05">
-                <p>
-                    <label for="temperature">Temperature:</label>
-                    <input type="number" id="temperature" name="temperature" min="0.01" step="0.05">
-                </p>
-                <p>
-                    <label for="delay">Delay (milliseconds):</label>
-                    <input type="number" id="delay" name="delay" min="0" step="1">
-                </p>
-                <p><b>Context config (all layers):</b></p>
-                <label for="keepTopK">How many tokens to keep in a context (Top-K):</label>
-                <p><input type="number" id="keepTopK" name="keepTopK" min="0"></p>
-                <label for="relevanceScore">The relevance score below which we drop the tokens:</label>
-                <p><input type="number" id="relevanceScore" name="relevanceScore" min="0" step="0.01"></p>
-                <p>
-                    <p>Numbers of tokens in a context per layer:</p>
-                    <table id="data-table">
-                        <thead>
-                            <tr>
-                                <th>Layer Index</th>
-                                <th>Context Size</th>
-                                <th>Avg. Context Size</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body">
-                            <!-- Rows will be added here -->
-                        </tbody>
-                    </table>
-                </p>
-                <p>
-                    <p>First layer (0) - token lifetime over vocabulary:</p>
-                    <small><i>How many discrete steps until the token is dropped from the context, based only on the relvance score threshold.</i></small>
-                    <div id="vocabLifetimeList"></div>
-                </p>
             </p>
         </section>
         <section class="article">
