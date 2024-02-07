@@ -277,6 +277,22 @@
             </p>
         </section>
         <section class="article">
+            <h2>Inference</h2>
+            <figure>
+                <img src="assets/context.png">
+                <figcaption></figcaption>
+            </figure>
+            <p>
+                During inference, past tokens are retained in the context and undergo decay at each time step. 
+                As the tokens gradually fade, they eventually lose relevance and can be omitted from the context. 
+                The relevance score for each token is calculated by taking the magnitude of the token and multiplying it by the decay factor:
+                <figure>
+                    <img src="assets/relevance_score.png">
+                    <figcaption></figcaption>
+                </figure>
+            </p>
+        </section>
+        <section class="article">
             <h2>Tiny Stories TED Model</h2>
             <p>
                 <ul>
