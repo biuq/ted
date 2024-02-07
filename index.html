@@ -214,10 +214,13 @@
                 The model was trained using GTX 1060 for 20000 iterations.
             </p>
             <p>
-                It runs in your browser with pure unoptimized JavaScript code without any parallelization.
+                <strong>It runs in your browser with pure unoptimized JavaScript code without any parallelization.</strong>
             </p>
             <p>
                 Download size: 25 MiB
+                <p>
+                    <strong>Click <i>Load</i> below and wait for it to finish to try the model.</strong>
+                </p>
             </p>
             <p>
                 <noscript>
@@ -259,7 +262,16 @@
                 <label for="relevanceScore">The relevance score below which we drop the tokens:</label>
                 <p><input type="number" id="relevanceScore" name="relevanceScore" min="0" step="0.01"></p>
                 <p>
-                    <p>Numbers of tokens in a context per layer:</p>
+                    <p>
+                        Number of tokens in a context per layer.
+                        Higher layers contain more useful representations,
+                        so the model learns to not forget them so quickly - predicts lower decay rate,
+                        thus the number of tokens in higher layers is higher.
+                        This effect can be seen if the Top-K for <i>Context config</i>
+                        is set to <strong>0</strong> - then Top-K strategy is not applied,
+                        and the relevance score threshold is greater than <strong>0</strong> - we allow
+                        to drop the tokens below the relevance score threshold.
+                    </p>
                     <table id="data-table">
                         <thead>
                             <tr>
@@ -274,8 +286,19 @@
                     </table>
                 </p>
                 <p>
-                    <p>First layer (0) - token lifetime over vocabulary:</p>
-                    <small><i>How many discrete steps until the token is dropped from the context, based only on the relvance score threshold.</i></small>
+                    <p>
+                        For the first layer - layer 0 - we can pre-calculate the particular character 
+                        lifetime ahead of time, because the character embeddings, once learnt, stay constant,
+                        thus the lambda (λ) parameter also is constant (per character). The calculation depends
+                        on the relevance score threshold set above in the <i>Context config</i>.
+                        The "lifetime" represents how many discrete steps into the future
+                        we need to take until the token is dropped from the context.
+                    </p>
+                    <small>
+                        <i>
+                            <p>Format: [character] : [lifetime]</p>
+                        </i>
+                    </small>
                     <div id="vocabLifetimeList"></div>
                 </p>
             </p>
