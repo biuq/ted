@@ -122,16 +122,16 @@ class ExponentialDecay(nn.Module):
         self.time: torch.Tensor | None = None
 
     def forward(self, tokens: torch.Tensor):
-        steps = tokens.size(-2)
+        n = tokens.size(-2)
 
-        if self.time is None or self.time.size(-1) != steps or (self.time.is_inference() and self.training):
-            self.time = torch.ones(steps, steps, device=tokens.device, dtype=torch.float32).tril_(-1).cumsum_(-2)
+        if self.time is None or self.time.size(-1) != n or (self.time.is_inference() and self.training):
+            self.time = torch.ones(n, n, device=tokens.device, dtype=torch.float32).tril_(-1).cumsum_(-2)
 
         time = self.time
         negative_lambdas = self.lambda_matrix.forward(tokens).sigmoid().log().swapaxes(-1, -2) # the negative of decay constant λ - lambda
-        decay = (negative_lambdas * time).exp().tril() # e^(-λ*t)
+        decay_factor = (negative_lambdas * time).exp().tril() # e^(-λ*t)
         quantities = self.quantity_matrix.forward(tokens)
-        output = decay @ quantities
+        output = decay_factor @ quantities
 
         # We don't need context during training,
         # since all the context is in the input batch,

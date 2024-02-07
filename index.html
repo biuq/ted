@@ -139,6 +139,25 @@
             padding: 10px;
             font-family: monospace;
         }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        figure {
+            text-align: center;
+        }
+        figcaption {
+            text-align: center;
+        }
+        .math-container {
+            background-color: #f4f4f4;
+            border-left: 5px solid #333;
+            margin: 20px 0;
+            padding: 10px;
+        }
+        math {
+            font-size: 1.1em;
+        }
     </style>
 </head>
 <body>
@@ -173,9 +192,90 @@
                 TED can be implemented in PyTorch without special CUDA kernels.
                 The code is available at: <a href="https://github.com/blpj/ted">https://github.com/blpj/ted</a>
             </p>
+            <figure>
+                <img src="assets/cat.png">
+                <figcaption><small>Tokens decay over time and their influence is summed creating more useful representations.</small></figcaption>
+            </figure>
         </section>
     </div>
     <div class="container">
+        <section class="article">
+            <h2>Architecture</h2>
+            <p>
+                TED architecture is similar to LLaMA <a href="#llama">[3]</a> in some aspects:
+                <ul>
+                    <li>Pre-normalization with RMSNorm</li>
+                    <li>SwiGLU activation function for FeedForward layers</li>
+                    <li>No linear biases</li>
+                </ul>
+                However, there is no need for positional encodings and the attention layer is replaced with exponential decay module.
+            </p>
+            <figure>
+                <img src="assets/architecture.png">
+                <figcaption><small>Multiple TED Layers can be stacked together.</small></figcaption>
+            </figure>
+        </section>
+        <section class="article">
+            <h2>Exponential Decay Module</h2>
+            The core idea behind TED is to learn and later predict the right value for the decay constant
+            in the exponential decay equation.
+            <p>
+                <figure>
+                    <img src="assets/exp.png">
+                    <figcaption><small>The model learns to predict λ (lambda).</small></figcaption>
+                </figure>
+            </p>
+            <h3>The recipe</h3>
+            <p>
+                1. Start with input tokens.
+                <figure>
+                    <img src="assets/input.png">
+                    <figcaption><code><small>tokens</small></code></figcaption>
+                </figure>
+            </p>
+            <p>
+                2. Use trainable weight matrix to predict the negative value of lambda based on the input tokens.
+                <figure>
+                    <img src="assets/lambda.png">
+                    <figcaption><code><small>negative_lambdas = self.lambda_matrix(tokens).sigmoid().log()</small></code></figcaption>
+                </figure>
+            </p>
+            <p>
+                3. Construct time matrix.
+                <figure>
+                    <img src="assets/time.png">
+                    <figcaption><code><small>time = torch.ones(n, n).tril_(-1).cumsum_(-2)</small></code></figcaption>
+                </figure>
+            </p>
+            <p>
+                4. Calculate decay factor.
+                <figure>
+                    <img src="assets/decay_factor.png">
+                    <figcaption><code><small>decay_factor = (negative_lambdas.swapaxes(-1, -2) * time).exp().tril()</small></code></figcaption>
+                </figure>
+            </p>
+            <p>
+                5. Use trainable matrix to calculate quantity.
+                <figure>
+                    <img src="assets/quantity.png">
+                    <figcaption><code><small>quantities = self.quantity_matrix(tokens)</small></code></figcaption>
+                </figure>
+            </p>
+            <p>
+                6. Calculate the influence (output) at every time step.
+                <figure>
+                    <img src="assets/influence.png">
+                    <figcaption><code><small>output = decay_factor @ quantities</small></code></figcaption>
+                </figure>
+            </p>
+            <p>
+                7. Use trainable matrices to transform and gate the output as the last step.
+                <figure>
+                    <img src="assets/final.png">
+                    <figcaption><code><small>y = self.output_matrix(F.silu(output)) * self.gate_matrix(tokens)</small></code></figcaption>
+                </figure>
+            </p>
+        </section>
         <section class="article">
             <h2>Tiny Stories TED Model</h2>
             <p>
@@ -191,9 +291,7 @@
                 The model was trained using GTX 1060 for 20000 iterations.
             </p>
             <p>
-                It runs on your device, in your browser, 
-                with pure unoptimized JavaScript code without any parallelization.
-                The source code is available [LINK].
+                It runs in your browser with pure unoptimized JavaScript code without any parallelization.
             </p>
             <p>
                 Download size: 25 MiB
@@ -229,7 +327,7 @@
                     <input type="number" id="temperature" name="temperature" min="0.01" step="0.05">
                 </p>
                 <p>
-                    <label for="delay">Delay:</label>
+                    <label for="delay">Delay (milliseconds):</label>
                     <input type="number" id="delay" name="delay" min="0" step="1">
                 </p>
                 <p><b>Context config (all layers):</b></p>
@@ -260,15 +358,10 @@
             </p>
         </section>
         <section class="article">
-            <h2>Method</h2>
-            <p>
-                <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/fdacadb747bac9932ffd02ee35cf3cbd0bc0b4c8">
-            </p>
-        </section>
-        <section class="article">
             <h2>References</h2>
             <p id="tinyStoriesPaper">[1]: <a href="https://doi.org/10.48550/arXiv.2305.07759">arXiv.2305.07759</a></p>
             <p id="tinyStoriesHf">[2]: <a href="https://huggingface.co/datasets/noanabeshima/TinyStoriesV2">huggingface.co/datasets/noanabeshima/TinyStoriesV2</a></p>
+            <p id="llama">[3]: <a href="https://doi.org/10.48550/arXiv.2302.13971">arXiv.2302.13971</a></p>
         </section>
     </div>
 
