@@ -264,14 +264,14 @@
                 <hr>
                 <p>
                     <p>
-                        Number of tokens in a context per layer.
+                        Below table contains dynamic information about number of tokens in a context per layer.
                         Higher layers contain more useful representations,
                         so the model learns to not forget them so quickly - predicts lower decay rate,
                         thus the number of tokens in higher layers is higher.
                         This effect can be seen if the Top-K for <i>Context config</i>
                         is set to <strong>0</strong> - then Top-K strategy is not applied,
                         and the relevance score threshold is greater than <strong>0</strong> - we allow
-                        to drop the tokens below the relevance score threshold.
+                        to drop the tokens whose relevance score is below threshold.
                     </p>
                     <table id="data-table">
                         <thead>
