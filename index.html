@@ -217,8 +217,10 @@
         </section>
         <section class="article">
             <h2>Exponential Decay Module</h2>
-            The core idea behind TED is to learn and later predict the right value for the decay constant
-            in the exponential decay equation.
+            The Exponential Decay Module is built on the premise that not all tokens carry equal weight as time progresses. 
+            By computing a decay factor that exponentially diminishes the influence of older tokens, the model can maintain a compact and relevant context, 
+            enabling more efficient processing and potentially enhancing performance on tasks that require a nuanced understanding of temporal dynamics.
+            The core idea behind TED is to learn and subsequently predict the appropriate value for the decay constant in the exponential decay equation.
             <p>
                 <figure>
                     <img src="assets/exp.png">
@@ -234,7 +236,7 @@
                 </figure>
             </p>
             <p>
-                2. Use trainable weight matrix to predict the negative value of lambda based on the input tokens.
+                2. Use trainable weight matrix to predict the negative value of lambda based on the input.
                 <figure>
                     <img src="assets/lambda.png">
                     <figcaption><code><small>negative_lambdas = self.lambda_matrix(tokens).sigmoid().log()</small></code></figcaption>
@@ -283,13 +285,40 @@
                 <figcaption></figcaption>
             </figure>
             <p>
-                During inference, past tokens are retained in the context and undergo decay at each time step. 
-                As the tokens gradually fade, they eventually lose relevance and can be omitted from the context. 
-                The relevance score for each token is calculated by taking the magnitude of the token and multiplying it by the decay factor:
+                During inference, the model must efficiently manage the context to maintain performance while conserving computational resources. 
+                Past tokens are kept in the context and are subject to an exponential decay, which reduces their relevance over time. 
+                This decay simulates the natural process of fading memory, where older information becomes less significant.
+                To quantify the fading influence of each token, a relevance score is calculated. 
+                This score is derived by multiplying the magnitude of the token's vector representation, 
+                which captures its current semantic value, by an exponential decay factor. 
+                                
                 <figure>
                     <img src="assets/relevance_score.png">
-                    <figcaption></figcaption>
+                    <figcaption><small>This factor decreases over time steps, reflecting the reduced importance of the token in the context.</small></figcaption>
                 </figure>
+                With the relevance score established, one can employ various strategies to manage the context by selectively retaining
+                only those tokens that are deemed crucial for the model's current state. 
+                These strategies include:
+                <ul>
+                    <li>
+                        <strong>Fixed Memory Strategy</strong>
+                        <p>
+                            The most straightforward approach is to maintain a fixed number of 
+                            K most relevant tokens in the context at all times. This strategy ensures constant memory usage and computational demand. The value of 
+                            K is chosen based on a balance between computational efficiency and the model's performance, 
+                            ensuring that enough context is preserved for accurate predictions.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Dynamic Threshold Strategy</strong>
+                        <p>
+                            Alternatively, a dynamic approach can be taken where tokens are kept in the context as long as their relevance score remains above a predefined threshold. 
+                            This threshold is pivotal; set too high, it may discard useful context prematurely, while too low may retain superfluous tokens, wasting computational resources.
+                            The threshold can be a static value determined through validation, 
+                            or it could be adaptively adjusted based on the model's performance metrics or the complexity of the task at hand.
+                        </p>
+                    </li>
+                </ul>
             </p>
         </section>
         <section class="article">
