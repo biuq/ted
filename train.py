@@ -111,7 +111,7 @@ def linear_progress(i: int, n: int):
     return i / n
 
 def cos_decay(i: int, n: int):
-    return math.cos(linear_progress(i, n) * math.pi) * 0.5 + 0.5
+    return (math.cos(linear_progress(i, n) * math.pi) + 1) / 2
 
 def lr_schedule(start: float, peak: float, end: float, warmup_iters: int, total_iters: int, i: int):
     if i < warmup_iters:
