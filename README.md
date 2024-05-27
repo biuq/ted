@@ -1,6 +1,6 @@
 # Text Generation with TED - Trainable Exponential Decay(s)
 
-Go to the project's [GitHub Page](https://blpj.github.io/ted/) to learn more.
+Go to the project's [GitHub Page](https://biuq.github.io/ted/) to learn more.
 
 ## Project structure
 
